@@ -13,17 +13,17 @@ contract TokenSwap {
     uint256 ratioAX;
     bool AcheaperthenX;
     uint256 fees;
-    TokenABC public tokenABC;
-    TokenXYZ public tokenXYZ;
+    TokenABC public squirt;
+    TokenXYZ public squirtswap;
 
-    constructor(address _tokenABC, address _tokenXYZ) {
+    constructor(address _squirt, address _squirtswap) {
         admin = payable(msg.sender);
-        tokenABC = TokenABC(_tokenABC);
-        tokenXYZ = TokenXYZ(_tokenXYZ);
+        tokenABC = Squirt(_squirt);
+        tokenXYZ = Squirtswap(_squirtswap);
         //due to openzeppelin implementation, transferFrom function implementation expects _msgSender() to be the beneficiary from the caller
         // but in this use cae we are using this contract to transfer so its always checking the allowance of SELF
-        tokenABC.approve(address(this), tokenABC.totalSupply());
-        tokenXYZ.approve(address(this), tokenABC.totalSupply());
+        squirt.approve(address(this), squirt.totalSupply());
+        squirtswap.approve(address(this), squirtswap.totalSupply());
     }
 
     modifier onlyAdmin() {
@@ -47,18 +47,18 @@ contract TokenSwap {
         return fees;
     }
 
-    // accepts amount of TokenABC and exchenge it for TokenXYZ, vice versa with function swapTKX
-    // transfer tokensABC from sender to smart contract after the user has approved the smart contract to
+    // accepts amount of Squirt and exchenge it for SquirtSwap, vice versa with function swapTKX
+    // transfer squirt from sender to smart contract after the user has approved the smart contract to
     // withdraw amount TKA from his account, this is a better solution since it is more open and gives the
     // control to the user over what calls are transfered instead of inspecting the smart contract
     // approve the caller to transfer one time from the smart contract address to his address
-    // transfer the exchanged TokenXYZ to the sender
+    // transfer the exchanged squirtswap to the sender
     function swapTKA(uint256 amountTKA) public returns (uint256) {
         //check if amount given is not 0
         // check if current contract has the necessary amout of Tokens to exchange
         require(amountTKA > 0, "amountTKA must be greater then zero");
         require(
-            tokenABC.balanceOf(msg.sender) >= amountTKA,
+            squirt.balanceOf(msg.sender) >= amountTKA,
             "sender doesn't have enough Tokens"
         );
 
@@ -71,13 +71,13 @@ contract TokenSwap {
         );
 
         require(
-            tokenXYZ.balanceOf(address(this)) > exchangeAmount,
-            "currently the exchange doesnt have enough XYZ Tokens, please retry later :=("
+            squirtswap.balanceOf(address(this)) > exchangeAmount,
+            "currently the exchange doesnt have enough Squirtswap Tokens, please retry later :=("
         );
 
-        tokenABC.transferFrom(msg.sender, address(this), amountTKA);
-        tokenXYZ.approve(address(msg.sender), exchangeAmount);
-        tokenXYZ.transferFrom(
+        squirt.transferFrom(msg.sender, address(this), amountTKA);
+        squirtswap.approve(address(msg.sender), exchangeAmount);
+        squirtswap.transferFrom(
             address(this),
             address(msg.sender),
             exchangeAmount
@@ -90,7 +90,7 @@ contract TokenSwap {
         // check if current contract has the necessary amout of Tokens to exchange and the sender
         require(amountTKX >= ratioAX, "amountTKX must be greater then ratio");
         require(
-            tokenXYZ.balanceOf(msg.sender) >= amountTKX,
+            tsquirtswap.balanceOf(msg.sender) >= amountTKX,
             "sender doesn't have enough Tokens"
         );
 
@@ -103,12 +103,12 @@ contract TokenSwap {
         );
 
         require(
-            tokenABC.balanceOf(address(this)) > exchangeAmount,
-            "currently the exchange doesnt have enough XYZ Tokens, please retry later :=("
+            squirt.balanceOf(address(this)) > exchangeAmount,
+            "currently the exchange doesnt have enough SquirtSwap Tokens, please retry later :=("
         );
-        tokenXYZ.transferFrom(msg.sender, address(this), amountTKX);
-        tokenABC.approve(address(msg.sender), exchangeAmount);
-        tokenABC.transferFrom(
+        squirtswap.transferFrom(msg.sender, address(this), amountTKX);
+        squirt.approve(address(msg.sender), exchangeAmount);
+        squirt.transferFrom(
             address(this),
             address(msg.sender),
             exchangeAmount
@@ -120,11 +120,11 @@ contract TokenSwap {
     // buy automatically tokens since contracts are immutable and in case the value of some tokens beomes
     // worthless its better to not to do any exchange at all
     function buyTokensABC(uint256 amount) public payable onlyAdmin {
-        tokenABC.buyTokens{value: msg.value}(amount);
+        squirt.buyTokens{value: msg.value}(amount);
     }
 
     function buyTokensXYZ(uint256 amount) public payable onlyAdmin {
-        tokenXYZ.buyTokens{value: msg.value}(amount);
+        squirtswap.buyTokens{value: msg.value}(amount);
     }
 
     function mul(uint256 x, uint256 y) internal pure returns (uint256 z) {
