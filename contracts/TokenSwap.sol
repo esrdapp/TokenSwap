@@ -2,8 +2,8 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "./TokenABC.sol";
-import "./TokenXYZ.sol";
+import "./SQUIRT.sol";
+import "./SQUIRTSWAP.sol";
 
 // this contract should be deployed after the deployment of the two contracts TokenABC and TokenXYZ
 // as instrcuted in the 2_deploy_contracts file
